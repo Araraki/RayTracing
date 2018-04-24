@@ -12,12 +12,24 @@
 //#define FRAND (float(rand()) / (RAND_MAX))
 inline float frand() { return float(rand()) / RAND_MAX; }
 
+vec3 random_in_unit_sphere()
+{
+	vec3 p;
+	do
+	{
+		p = 2.0f*vec3(frand(), frand(), frand()) - vec3(1.0f, 1.0f, 1.0f);
+	} while (p.squared_length() >= 1.0f);
+	return p;
+}
+
 vec3 color(const ray& r, hitable* world)
 {
 	hit_record rec;
-	if (world->hit(r, 0.0f, FLT_MAX, rec))
+	if (world->hit(r, 0.001f, FLT_MAX, rec))
 	{
-		return 0.5f*vec3(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
+		vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+		return 0.5f*color(ray(rec.p, target - rec.p), world);
+		//return 0.5f*vec3(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
 	}
 	else
 	{
@@ -58,6 +70,7 @@ int main(int argc, char* argv[])
 				col += color(r, world);
 			}			
 			col /= float(ns);
+			col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
 			int ir = int(255.99*col[0]);
 			int ig = int(255.99*col[1]);
 			int ib = int(255.99*col[2]);
