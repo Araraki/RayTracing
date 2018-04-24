@@ -1,9 +1,16 @@
 #include <fstream>
+#include <cstdlib>
+#include <ctime>
+
 #include "vec3.h"
 #include "ray.h"
 #include "hitable.h"
 #include "sphere.h"
 #include "hitable_list.h"
+#include "camera.h"
+
+//#define FRAND (float(rand()) / (RAND_MAX))
+inline float frand() { return float(rand()) / RAND_MAX; }
 
 vec3 color(const ray& r, hitable* world)
 {
@@ -24,14 +31,13 @@ int main(int argc, char* argv[])
 {
 	int nx = 800;
 	int ny = 600;
+	int ns = 100;
+
 	std::ofstream outf;
 	outf.open("d://Documents//Stanley.Wang//Desktop//out.ppm");
 	outf << "P3\n" << nx << " " << ny << "\n255\n";
 
-	vec3 lower_left_corner(-4.0f, -3.0f, -1.0f);
-	vec3 horizontal(8.0, 0.0, 0.0);
-	vec3 vertical(0.0, 6.0, 0.0);
-	vec3 origin(0.0, 0.0, 0.0);
+	camera cam;
 
 	hitable* list[2];
 	list[0] = new sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f);
@@ -42,10 +48,16 @@ int main(int argc, char* argv[])
 	{
 		for (auto i = 0; i < nx; ++i)	// Left 2 Right
 		{
-			float u = float(i) / float(nx);
-			float v = float(j) / float(ny);
-			ray r(origin, lower_left_corner + u*horizontal + v*vertical);
-			vec3 col = color(r, world);
+			vec3 col(0.0f, 0.0f, 0.0f);
+			for (int s = 0; s < ns; s++)
+			{
+				float u = float(i + frand()) / float(nx);
+				float v = float(j + frand()) / float(ny);
+				ray r = cam.get_ray(u, v);
+				vec3 p = r.point_at_parameter(2.0f);
+				col += color(r, world);
+			}			
+			col /= float(ns);
 			int ir = int(255.99*col[0]);
 			int ig = int(255.99*col[1]);
 			int ib = int(255.99*col[2]);
