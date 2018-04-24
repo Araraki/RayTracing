@@ -8,28 +8,20 @@
 #include "sphere.h"
 #include "hitable_list.h"
 #include "camera.h"
+#include "random.h"
+#include "material.h"
 
-//#define FRAND (float(rand()) / (RAND_MAX))
-inline float frand() { return float(rand()) / RAND_MAX; }
-
-vec3 random_in_unit_sphere()
-{
-	vec3 p;
-	do
-	{
-		p = 2.0f*vec3(frand(), frand(), frand()) - vec3(1.0f, 1.0f, 1.0f);
-	} while (p.squared_length() >= 1.0f);
-	return p;
-}
-
-vec3 color(const ray& r, hitable* world)
+vec3 color(const ray& r, hitable* world, int depth)
 {
 	hit_record rec;
 	if (world->hit(r, 0.001f, FLT_MAX, rec))
 	{
-		vec3 target = rec.p + rec.normal + random_in_unit_sphere();
-		return 0.5f*color(ray(rec.p, target - rec.p), world);
-		//return 0.5f*vec3(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
+		ray scattered;
+		vec3 attenuation;
+		if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+			return attenuation*color(scattered, world, depth + 1);
+		else
+			return vec3(0.0f, 0.0f, 0.0f);
 	}
 	else
 	{
@@ -51,10 +43,12 @@ int main(int argc, char* argv[])
 
 	camera cam;
 
-	hitable* list[2];
-	list[0] = new sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f);
-	list[1] = new sphere(vec3(0.0f, -100.5f, -1.0f), 100);
-	hitable* world = new hitable_list(list, 2);
+	hitable* list[4];
+	list[0] = new sphere(vec3(0, 0, -1), 0.5f, new lambertian(vec3(0.8f, 0.3f, 0.3f)));
+	list[1] = new sphere(vec3(0, -100.5f, -1), 100, new lambertian(vec3(0.8f, 0.8f, 0.3f)));
+	list[2] = new sphere(vec3(1, 0, -1), 0.5f, new metal(vec3(0.8f, 0.6f, 0.2f), 0.3f));
+	list[3] = new sphere(vec3(-1, 0, -1), 0.5f, new metal(vec3(0.9f, 0.9f, 0.9f), 1.0f));
+	hitable* world = new hitable_list(list, 4);
 
 	for (auto j = ny - 1; j >= 0; --j)	// Down 2 Up
 	{
@@ -67,7 +61,7 @@ int main(int argc, char* argv[])
 				float v = float(j + frand()) / float(ny);
 				ray r = cam.get_ray(u, v);
 				vec3 p = r.point_at_parameter(2.0f);
-				col += color(r, world);
+				col += color(r, world, 0);
 			}			
 			col /= float(ns);
 			col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
