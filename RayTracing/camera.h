@@ -5,11 +5,13 @@
 class camera
 {
 public:
-	camera()
+	camera(int h, int w)
 	{
-		lower_left_corner = vec3(-4.0f, -3.0f, -1.0f);
-		horizontal = vec3(8.0, 0.0, 0.0);
-		vertical = vec3(0.0, 6.0, 0.0);
+		float unitY = float(h) / 100.0f;
+		float unitX = float(w) / 100.0f;
+		lower_left_corner = vec3(-unitX*0.5f, -unitY*0.5f, -1.0f);
+		horizontal = vec3(unitX, 0.0, 0.0);
+		vertical = vec3(0.0, unitY, 0.0);
 		origin = vec3(0.0, 0.0, 0.0);
 	}
 	ray get_ray(float u, float v)

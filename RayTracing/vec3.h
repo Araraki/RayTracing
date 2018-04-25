@@ -20,7 +20,7 @@ public:
 	}
 	inline vec3 operator-() const
 	{
-		return vec3(-e[0], -e[1], -e[2]);
+		return {-e[0], -e[1], -e[2]};
 	}
 	inline float operator[](int i) const
 	{
@@ -94,37 +94,37 @@ public:
 
 inline vec3 operator+(const vec3& vl, const vec3& vr)
 {
-	return vec3(vl.e[0] + vr.e[0], vl.e[1] + vr.e[1], vl.e[2] + vr.e[2]);
+	return {vl.e[0] + vr.e[0], vl.e[1] + vr.e[1], vl.e[2] + vr.e[2]};
 }
 
 inline vec3 operator-(const vec3& vl, const vec3& vr)
 {
-	return vec3(vl.e[0] - vr.e[0], vl.e[1] - vr.e[1], vl.e[2] - vr.e[2]);
+	return {vl.e[0] - vr.e[0], vl.e[1] - vr.e[1], vl.e[2] - vr.e[2]};
 }
 
 inline vec3 operator*(const vec3& vl, const vec3& vr)
 {
-	return vec3(vl.e[0] * vr.e[0], vl.e[1] * vr.e[1], vl.e[2] * vr.e[2]);
+	return {vl.e[0] * vr.e[0], vl.e[1] * vr.e[1], vl.e[2] * vr.e[2]};
 }
 
 inline vec3 operator*(const vec3& vl, float t)
 {
-	return vec3(vl.e[0] * t, vl.e[1] * t, vl.e[2] * t);
+	return {vl.e[0] * t, vl.e[1] * t, vl.e[2] * t};
 }
 
 inline vec3 operator*(float t, const vec3& vr)
 {	
-	return vec3(vr.e[0] * t, vr.e[1] * t, vr.e[2] * t);
+	return {vr.e[0] * t, vr.e[1] * t, vr.e[2] * t};
 }
 
 inline vec3 operator/(const vec3& vl, const vec3& vr)
 {
-	return vec3(vl.e[0] / vr.e[0], vl.e[1] / vr.e[1], vl.e[2] / vr.e[2]);
+	return {vl.e[0] / vr.e[0], vl.e[1] / vr.e[1], vl.e[2] / vr.e[2]};
 }
 
 inline vec3 operator/(const vec3& vl, float t)
 {
-	return vec3(vl.e[0] / t, vl.e[1] / t, vl.e[2] / t);
+	return {vl.e[0] / t, vl.e[1] / t, vl.e[2] / t};
 }
 
 inline vec3 unit_vector(vec3 v)
@@ -139,9 +139,11 @@ inline float dot(const vec3 &v1, const vec3 &v2)
 
 inline vec3 cross(const vec3 &v1, const vec3 &v2)
 {
-	return vec3((  v1.e[1]*v2.e[2] - v1.e[2]*v2.e[1]),
+	return {
+		(  v1.e[1]*v2.e[2] - v1.e[2]*v2.e[1]),
 				(-(v1.e[0]*v2.e[2] - v1.e[2]*v2.e[0])),
-				(  v1.e[0]*v2.e[1] - v1.e[1]*v2.e[0]));
+				(  v1.e[0]*v2.e[1] - v1.e[1]*v2.e[0])
+	};
 }
 
 inline std::istream& operator>>(std::istream &is, vec3& t)

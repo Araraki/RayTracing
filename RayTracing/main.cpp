@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
@@ -21,7 +22,7 @@ vec3 color(const ray& r, hitable* world, int depth)
 		if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered))
 			return attenuation*color(scattered, world, depth + 1);
 		else
-			return vec3(0.0f, 0.0f, 0.0f);
+			return {0.0f, 0.0f, 0.0f};
 	}
 	else
 	{
@@ -33,22 +34,23 @@ vec3 color(const ray& r, hitable* world, int depth)
 
 int main(int argc, char* argv[])
 {
-	int nx = 800;
-	int ny = 600;
-	int ns = 100;
+	int nx = 1600;
+	int ny = 900;
+	int ns = 100; 
 
 	std::ofstream outf;
 	outf.open("d://Documents//Stanley.Wang//Desktop//out.ppm");
 	outf << "P3\n" << nx << " " << ny << "\n255\n";
 
-	camera cam;
+	camera cam(ny, nx);
 
-	hitable* list[4];
-	list[0] = new sphere(vec3(0, 0, -1), 0.5f, new lambertian(vec3(0.8f, 0.3f, 0.3f)));
-	list[1] = new sphere(vec3(0, -100.5f, -1), 100, new lambertian(vec3(0.8f, 0.8f, 0.3f)));
-	list[2] = new sphere(vec3(1, 0, -1), 0.5f, new metal(vec3(0.8f, 0.6f, 0.2f), 0.3f));
-	list[3] = new sphere(vec3(-1, 0, -1), 0.5f, new metal(vec3(0.9f, 0.9f, 0.9f), 1.0f));
-	hitable* world = new hitable_list(list, 4);
+	hitable* list[5];
+	list[0] = new sphere(vec3(0, 0, -1), 0.5f, new lambertian(vec3(0.1f, 0.2f, 0.5f)));
+	list[1] = new sphere(vec3(0, -100.5f, -1), 100, new lambertian(vec3(0.8f, 0.8f, 0.0f)));
+	list[2] = new sphere(vec3(1, 0, -1), 0.5f, new metal(vec3(0.8f, 0.6f, 0.2f), 0.0f));
+	list[3] = new sphere(vec3(-1, 0, -1), 0.5f, new dielectrics(1.5f));
+	list[4] = new sphere(vec3(-1, 0, -1), -0.45f, new dielectrics(1.5f));
+	hitable* world = new hitable_list(list, 5);
 
 	for (auto j = ny - 1; j >= 0; --j)	// Down 2 Up
 	{
@@ -70,6 +72,7 @@ int main(int argc, char* argv[])
 			int ib = int(255.99*col[2]);
 			outf << ir << " " << ig << " " << ib << "\n";
 		}
+		std::cout << (1.0f - float(j) / ny)*100 << "%\n";
 	}
 	outf.close();
 }
