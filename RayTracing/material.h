@@ -1,8 +1,9 @@
 #pragma once
 
 #include "ray.h"
-#include "hitable.h"
 #include "random.h"
+
+struct hit_record;
 
 vec3 reflect(const vec3& v, const vec3& n)
 {
@@ -111,31 +112,26 @@ public:
 		{
 			outward_normal = -rec.normal;
 			ni_over_nt = ref_idx;
-			cosine = ref_idx*dot(r_in.direction(), rec.normal) / r_in.direction().length();
+			//cosine = ref_idx*dot(r_in.direction(), rec.normal) / r_in.direction().length();
+			cosine = dot(r_in.direction(), rec.normal) / r_in.direction().length();
+			cosine = sqrt(1 - ref_idx*ref_idx*(1 - cosine*cosine));
 		}
 		else
 		{
 			outward_normal = rec.normal;
-			ni_over_nt = 1.0 / ref_idx;
+			ni_over_nt = 1.0f / ref_idx;
 			cosine = -dot(r_in.direction(), rec.normal) / r_in.direction().length();
 		}
+		
 		if (refract(r_in.direction(), outward_normal, ni_over_nt, refracted))
-		{
 			reflect_prob = schlick(cosine, ref_idx);
-		}
 		else
-		{
-			scattered = ray(rec.p, reflected);
 			reflect_prob = 1.0f;
-		}
+		
 		if (frand() < reflect_prob)
-		{
 			scattered = ray(rec.p, reflected);
-		}
 		else
-		{
 			scattered = ray(rec.p, refracted);
-		}
 		return true;
 	}
 
