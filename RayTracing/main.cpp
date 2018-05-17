@@ -45,11 +45,12 @@ int main(int argc, char* argv[])
 	outf.open("d://Documents//Stanley.Wang//Desktop//out.ppm");
 	outf << "P3\n" << nx << " " << ny << "\n255\n";
 
-	camera cam(vec3(-2.0f,2.0f,1.0f),
-			   vec3(0.0f, 0.0f, -1.0f),
-			   vec3(0.0f, 1.0f, 0.0f),
-			   60,
-			   float(nx)/float(ny));
+	vec3 lookfrom(3.0f, 3.0f, 2.0f);
+	vec3 lookat(0.0f, 0.0f, -1.0f);
+	float dist_to_focus = (lookfrom - lookat).length();
+	float aperture = 0.624f;
+
+	camera cam(lookfrom, lookat, vec3(0.0f, 1.0f, 0.0f), 20, float(nx) / float(ny), aperture, dist_to_focus);
 
 	hitable* list[5];
 	list[0] = new sphere(vec3(0, 0, -1), 0.5f, new lambertian(vec3(0.1f, 0.2f, 0.5f)));
