@@ -52,13 +52,13 @@ hitable* random_scene()
 				if (choose_mat < 0.8)
 					list[i++] = new sphere(center, 0.2, new lambertian(vec3(frand()*frand(), frand()*frand(), frand()*frand())));
 				else if (choose_mat < 0.95)
-					list[i++] = new sphere(center, 0.2, new metal(vec3(0.5 + 1 + frand(), 0.5 + 1 + frand(), 0.5 + 1 + frand()), 0.5*frand()));
+					list[i++] = new sphere(center, 0.2, new metal(vec3(0.5 *(1 + frand()), 0.5 *(1 + frand()), 0.5 *(1 + frand())), 0.5*frand()));
 				else
-					list[i++] = new sphere(center, 0.2, new dielectrics(1.5));
+					list[i++] = new sphere(center, 0.2, new dielectric(1.5));
 			}
 		}
 	}
-	list[i++] = new sphere(vec3(0, 1, 0), 1.0, new dielectrics(1.5));
+	list[i++] = new sphere(vec3(0, 1, 0), 1.0, new dielectric(1.5));
 	list[i++] = new sphere(vec3(-4, 1, 0), 1.0, new lambertian(vec3(0.4, 0.2, 0.1)));
 	list[i++] = new sphere(vec3(4, 1, 0), 1.0, new metal(vec3(0.7, 0.6, 0.5), 0.0));
 
@@ -73,22 +73,22 @@ int main(int argc, char* argv[])
 	int ns = 128; 
 
 	std::ofstream outf;
-	outf.open("d://Documents//Stanley.Wang//Desktop//out.ppm");
+	outf.open("C://Users//Stanley//Desktop//out.ppm");
 	outf << "P3\n" << nx << " " << ny << "\n255\n";
 
-	vec3 lookfrom(3.0f, 3.0f, 2.0f);
-	vec3 lookat(0.0f, 0.0f, -1.0f);
-	float dist_to_focus = (lookfrom - lookat).length();
-	float aperture = 0.624f;
+	vec3 lookfrom(13, 2, 3);
+	vec3 lookat(0, 0, 0);
+	float dist_to_focus = 10;
+	float aperture = 0.1f;
 
-	camera cam(lookfrom, lookat, vec3(0.0f, 1.0f, 0.0f), 20, float(nx) / float(ny), aperture, dist_to_focus);
+	camera cam(lookfrom, lookat, vec3(0, 1, 0), 20, float(nx)/float(ny), aperture, dist_to_focus);
 
 	//hitable* list[5];
 	//list[0] = new sphere(vec3(0, 0, -1), 0.5f, new lambertian(vec3(0.1f, 0.2f, 0.5f)));
 	//list[1] = new sphere(vec3(0, -100.5f, -1), 100, new lambertian(vec3(0.8f, 0.8f, 0.0f)));
 	//list[2] = new sphere(vec3(1, 0, -1), 0.5f, new metal(vec3(0.8f, 0.6f, 0.2f), 0.0f));
-	//list[3] = new sphere(vec3(-1, 0, -1), 0.48f, new dielectrics(1.5f));
-	//list[4] = new sphere(vec3(-1, 0, -1), -0.45f, new dielectrics(1.5f));
+	//list[3] = new sphere(vec3(-1, 0, -1), 0.48f, new dielectric(1.5f));
+	//list[4] = new sphere(vec3(-1, 0, -1), -0.45f, new dielectric(1.5f));
 	//hitable* world = new hitable_list(list, 5);
 
 	//float R = cos(M_PI / 4);

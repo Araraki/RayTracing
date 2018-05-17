@@ -67,10 +67,10 @@ public:
 	float fuzz;
 };
 
-class dielectrics :public material
+class dielectric :public material
 {
 public:
-	dielectrics(float ri) : ref_idx(ri) {}
+	dielectric(float ri) : ref_idx(ri) {}
 	virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const override
 	{
 /*
