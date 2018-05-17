@@ -1,5 +1,6 @@
 #pragma once
 
+#include <math.h>
 #include <iostream>
 
 class vec3

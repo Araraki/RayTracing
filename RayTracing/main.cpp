@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include <iomanip>
 #include <fstream>
 #include <cstdlib>
@@ -36,10 +38,6 @@ int main(int argc, char* argv[])
 {
 	const int nx = 1600;
 	const int ny = 900;
-//	int a[nx][ny] = { { 0 } };
-//	for (auto& x : a)
-//		for (auto& y : x)
-//			y = 0;
 
 	int ns = 128; 
 
@@ -47,7 +45,11 @@ int main(int argc, char* argv[])
 	outf.open("d://Documents//Stanley.Wang//Desktop//out.ppm");
 	outf << "P3\n" << nx << " " << ny << "\n255\n";
 
-	camera cam(ny, nx);
+	camera cam(vec3(-2.0f,2.0f,1.0f),
+			   vec3(0.0f, 0.0f, -1.0f),
+			   vec3(0.0f, 1.0f, 0.0f),
+			   60,
+			   float(nx)/float(ny));
 
 	hitable* list[5];
 	list[0] = new sphere(vec3(0, 0, -1), 0.5f, new lambertian(vec3(0.1f, 0.2f, 0.5f)));
@@ -56,6 +58,12 @@ int main(int argc, char* argv[])
 	list[3] = new sphere(vec3(-1, 0, -1), 0.48f, new dielectrics(1.5f));
 	list[4] = new sphere(vec3(-1, 0, -1), -0.45f, new dielectrics(1.5f));
 	hitable* world = new hitable_list(list, 5);
+
+	//float R = cos(M_PI / 4);
+	//hitable* list[2];
+	//list[0] = new sphere(vec3(-R, 0, -1), R, new lambertian(vec3(0.0f, 0.0f, 0.1f)));
+	//list[1] = new sphere(vec3( R, 0, -1), R, new lambertian(vec3(1.0f, 0.0f, 0.0f)));
+	//hitable* world = new hitable_list(list, 2);
 
 	for (auto j = ny - 1; j >= 0; --j)	// Down 2 Up
 	{
